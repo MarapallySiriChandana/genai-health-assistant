@@ -3,9 +3,9 @@
 A comprehensive Generative AI platform for transformative healthcare, featuring an AI chatbot, symptom checker, medical image analysis, and drug information system.
 
 ## 🚀 Features
-- **AI Chatbot**: Intelligent medical assistant powered by Google Gemini.
+- **AI Chatbot**: Google Gemini API integrated chatbot for healthcare-related queries.
 - **Symptom Checker**: ML-based disease prediction from user symptoms.
-- **Image Analysis**: AI-driven analysis of medical scans and images.
+- **Image Analysis**: Upload interface integrated with Gemini API for image-based healthcare assistance.
 - **Drug Info**: Database of common medications and their usages.
 - **Admin Dashboard**: Custom-built premium panel for managing users and system data.
 
@@ -94,3 +94,11 @@ The project includes a custom **Admin Dashboard** for authorized staff members.
 - **MySQL Connection Error**: Ensure MySQL service is running and the credentials in `.env` match your local setup.
 - **Gemini Response Error**: Verify your `GEMINI_API_KEY` is valid and you have an active internet connection.
 - **Static Files**: If images/styles don't load, run `python manage.py collectstatic`.
+
+---
+
+## Known Limitations
+* AI Chatbot and Image Analysis modules depend on a valid Google Gemini API key.
+* If the API key expires or is removed, AI-generated responses will not be available.
+* The application interface, authentication system, dashboard, database operations, and other modules will continue to function normally.
+* The project is intended for educational and research purposes and should not be used as a substitute for professional medical advice.
