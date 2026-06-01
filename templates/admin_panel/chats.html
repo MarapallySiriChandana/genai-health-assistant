@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Chat Logs | GenAI Health{% endblock %}
+
+{% block extra_css %}
+<style>
+    .log-container {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: var(--card-shadow);
+    }
+    .chat-bubble {
+        padding: 1rem;
+        border-radius: 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+    .user-msg { background: #f8fafc; border-left: 4px solid #0ea5e9; }
+    .ai-msg { background: #f0fdf4; border-left: 4px solid #22c55e; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-8">
+            <h2 class="fw-bold">AI Chat Logs</h2>
+            <p class="text-muted">History of all user interactions with the AI Assistant.</p>
+        </div>
+        <div class="col-4 text-end">
+            <a href="{% url 'admin_panel:dashboard' %}" class="btn btn-light rounded-3 px-4">Back</a>
+        </div>
+    </div>
+
+    <div class="log-container">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr class="text-secondary small text-uppercase">
+                        <th>User</th>
+                        <th>Conversation</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for chat in chats %}
+                    <tr>
+                        <td style="width: 15%"><span class="fw-bold">{{ chat.user.username }}</span></td>
+                        <td style="width: 70%">
+                            <div class="chat-bubble user-msg mb-2">
+                                <strong>User:</strong> {{ chat.query }}
+                            </div>
+                            <div class="chat-bubble ai-msg">
+                                <strong>AI:</strong> {{ chat.response|truncatewords:50 }}
+                            </div>
+                        </td>
+                        <td style="width: 15%"><small class="text-muted">{{ chat.timestamp|date:"M d, Y H:i" }}</small></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center py-5 text-muted">No chat logs found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

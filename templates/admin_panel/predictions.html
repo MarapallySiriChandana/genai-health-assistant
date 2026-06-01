@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Symptom Predictions | GenAI Health{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pred-container {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: var(--card-shadow);
+    }
+    .symptom-tag {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        background: #f1f5f9;
+        border-radius: 0.5rem;
+        font-size: 0.8rem;
+        margin-right: 0.3rem;
+        margin-bottom: 0.3rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-8">
+            <h2 class="fw-bold">Symptom Checker History</h2>
+            <p class="text-muted">Analysis of all disease predictions made by users.</p>
+        </div>
+        <div class="col-4 text-end">
+            <a href="{% url 'admin_panel:dashboard' %}" class="btn btn-light rounded-3 px-4">Back</a>
+        </div>
+    </div>
+
+    <div class="pred-container">
+        <div class="table-responsive">
+            <table class="table align-middle table-hover">
+                <thead>
+                    <tr class="text-secondary small text-uppercase">
+                        <th>User</th>
+                        <th>Symptoms Provided</th>
+                        <th>Predicted Condition</th>
+                        <th>Confidence</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in predictions %}
+                    <tr>
+                        <td><span class="fw-bold">{{ p.user.username }}</span></td>
+                        <td>
+                            <div class="d-flex flex-wrap">
+                                {% for s in p.symptoms.split|slice:":10" %}
+                                <span class="symptom-tag">{{ s|cut:"," }}</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td><span class="badge bg-primary rounded-pill px-3">{{ p.predicted_disease }}</span></td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="me-2">{{ p.confidence|floatformat:1 }}%</span>
+                                <div class="progress" style="width: 60px; height: 6px;">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ p.confidence }}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><small class="text-muted">{{ p.timestamp|date:"M d, Y H:i" }}</small></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-5 text-muted">No predictions recorded yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

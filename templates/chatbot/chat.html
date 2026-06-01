@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Chatbot - GenAI Health{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        height: 400px;
+        overflow-y: auto;
+        padding: 1.5rem;
+        background: #f8fafc;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column-reverse;
+    }
+    .chat-bubble {
+        max-width: 80%;
+        margin-bottom: 1rem;
+        padding: 0.8rem 1.2rem;
+        border-radius: 1rem;
+    }
+    .user-bubble {
+        align-self: flex-end;
+        background-color: var(--accent-color);
+        color: white;
+        border-bottom-right-radius: 0;
+    }
+    .ai-bubble {
+        align-self: flex-start;
+        background-color: white;
+        color: #1e293b;
+        box-shadow: var(--card-shadow);
+        border-bottom-left-radius: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card p-4">
+            <h3 class="fw-bold mb-4">AI Healthcare Assistant</h3>
+            
+            <div class="chat-container mb-4" id="chatContainer">
+                {% for chat in chats %}
+                    <div class="chat-bubble ai-bubble">
+                        <strong>AI:</strong> {{ chat.response }}
+                    </div>
+                    <div class="chat-bubble user-bubble">
+                        {{ chat.query }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <form method="post" class="d-flex gap-2">
+                {% csrf_token %}
+                <input type="text" name="query" class="form-control" placeholder="Ask a health question..." required>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Scroll to bottom of chat
+    const chatContainer = document.getElementById('chatContainer');
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+</script>
+{% endblock %}

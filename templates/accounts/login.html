@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - GenAI Health{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card glass-card p-4 mt-5">
+            <h2 class="text-center fw-bold mb-4">Login</h2>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field.errors }}
+                        <input type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}" class="form-control" placeholder="Enter {{ field.label }}">
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary w-100 mt-3">Sign In</button>
+            </form>
+            <div class="text-center mt-4">
+                <p>Don't have an account? <a href="{% url 'register' %}" class="text-decoration-none">Register here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

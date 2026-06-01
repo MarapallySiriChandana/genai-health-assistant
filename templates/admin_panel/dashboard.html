@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard | GenAI Health{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        border-radius: 1.5rem;
+        background: white;
+        padding: 2rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    .stat-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .bg-blue-soft { background: #e0f2fe; color: #0ea5e9; }
+    .bg-purple-soft { background: #f3e8ff; color: #a855f7; }
+    .bg-green-soft { background: #dcfce7; color: #22c55e; }
+    .bg-orange-soft { background: #ffedd5; color: #f97316; }
+    
+    .table-container {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+    }
+    .status-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="fw-bold text-dark">System Overview</h2>
+            <p class="text-muted">Welcome to the central administrative hub.</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-blue-soft">
+                    <i class="bi bi-people-fill">👥</i>
+                </div>
+                <h3 class="fw-bold mb-1">{{ stats.total_users }}</h3>
+                <p class="text-muted mb-0">Total active Users</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-purple-soft">
+                    <i class="bi bi-chat-dots-fill">💬</i>
+                </div>
+                <h3 class="fw-bold mb-1">{{ stats.total_chats }}</h3>
+                <p class="text-muted mb-0">AI Chat Logs</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-green-soft">
+                    <i class="bi bi-graph-up-arrow">📊</i>
+                </div>
+                <h3 class="fw-bold mb-1">{{ stats.total_predictions }}</h3>
+                <p class="text-muted mb-0">Symptom Predictions</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon bg-orange-soft">
+                    <i class="bi bi-image-fill">🖼️</i>
+                </div>
+                <h3 class="fw-bold mb-1">{{ stats.total_images }}</h3>
+                <p class="text-muted mb-0">Image Analyses</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Quick Links -->
+        <div class="col-md-12">
+            <div class="table-container">
+                <h5 class="fw-bold mb-4">Quick Management</h5>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <a href="{% url 'admin_panel:manage_users' %}" class="btn btn-outline-primary w-100 py-3 rounded-4">Manage Users</a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'admin_panel:chat_logs' %}" class="btn btn-outline-primary w-100 py-3 rounded-4">View Chat Logs</a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'admin_panel:predictions' %}" class="btn btn-outline-primary w-100 py-3 rounded-4">View Predictions</a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'admin_panel:image_analyses' %}" class="btn btn-outline-primary w-100 py-3 rounded-4">Image Analysis</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="col-md-6 mt-4">
+            <div class="table-container">
+                <h5 class="fw-bold mb-4">Recent Chat Activity</h5>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>User</th>
+                                <th>Query Preview</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for chat in recent_chats %}
+                            <tr>
+                                <td><span class="fw-semibold">{{ chat.user.username }}</span></td>
+                                <td><small class="text-muted">{{ chat.query|truncatechars:40 }}</small></td>
+                                <td><small>{{ chat.timestamp|date:"H:i A" }}</small></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center py-4 text-muted">No recent chats</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mt-4">
+            <div class="table-container">
+                <h5 class="fw-bold mb-4">Recent Predictions</h5>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>User</th>
+                                <th>Disease</th>
+                                <th>Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pred in recent_predictions %}
+                            <tr>
+                                <td><span class="fw-semibold">{{ pred.user.username }}</span></td>
+                                <td><span class="status-badge bg-green-soft">{{ pred.predicted_disease }}</span></td>
+                                <td>{{ pred.confidence|floatformat:2 }}%</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center py-4 text-muted">No recent predictions</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

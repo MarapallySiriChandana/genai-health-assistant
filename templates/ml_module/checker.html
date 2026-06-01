@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Symptom Checker - GenAI Health{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card p-4">
+            <h3 class="fw-bold mb-4">Symptom Checker (ML Model)</h3>
+            <p class="text-secondary mb-4">Select all symptoms you are currently experiencing to get a disease prediction.</p>
+
+            <form method="post" class="mb-4">
+                {% csrf_token %}
+                <div class="row g-3">
+                    {% for symptom in symptoms_list %}
+                        <div class="col-md-4 col-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="symptoms" value="{{ symptom }}" id="{{ symptom }}" 
+                                {% if symptom in selected_symptoms %}checked{% endif %}>
+                                <label class="form-check-label" for="{{ symptom }}">
+                                    {{ symptom|replace_underscore }}
+                                </label>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary mt-4 px-5">Analyze Symptoms</button>
+            </form>
+
+            {% if prediction %}
+                <div class="alert alert-info rounded-4 p-4 mt-4">
+                    <h4 class="fw-bold">Prediction Result:</h4>
+                    <p style="font-size: 1.25rem;">You might have: <strong>{{ prediction }}</strong></p>
+                    <div class="progress mb-2" style="height: 10px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ confidence }}%" aria-valuenow="{{ confidence }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small class="text-secondary">AI Confidence: {{ confidence|floatformat:1 }}%</small>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

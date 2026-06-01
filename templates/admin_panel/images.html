@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Image Analysis Logs | GenAI Health{% endblock %}
+
+{% block extra_css %}
+<style>
+    .image-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+    .analysis-card {
+        background: white;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.3s;
+    }
+    .analysis-card:hover { transform: translateY(-5px); }
+    .scan-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    .analysis-body { padding: 1.5rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-8">
+            <h2 class="fw-bold">Medical Image Analysis</h2>
+            <p class="text-muted">Review all medical scans uploaded and the AI's diagnostic feedback.</p>
+        </div>
+        <div class="col-4 text-end">
+            <a href="{% url 'admin_panel:dashboard' %}" class="btn btn-light rounded-3 px-4">Back</a>
+        </div>
+    </div>
+
+    <div class="image-grid">
+        {% for a in analyses %}
+        <div class="analysis-card">
+            <img src="{{ a.image.url }}" class="scan-img" alt="Medical Scan">
+            <div class="analysis-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="fw-bold">{{ a.user.username }}</span>
+                    <small class="text-muted">{{ a.timestamp|date:"M d, Y" }}</small>
+                </div>
+                <div class="bg-light p-3 rounded-3 small text-muted mb-0" style="height: 100px; overflow-y: auto;">
+                    <strong>AI Response:</strong><br>
+                    {{ a.analysis_result }}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="alert alert-light">No image analyses found.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

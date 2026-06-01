@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Image Analysis - GenAI Health{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card p-4">
+            <h3 class="fw-bold mb-4">Medical Image Analysis (Gemini Vision)</h3>
+            <p class="text-secondary mb-4">Upload an X-ray, MRI, or any medical image to get AI-assisted insights. <em>Note: This is not a diagnosis.</em></p>
+
+            <form method="post" enctype="multipart/form-data" class="mb-5">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Select Image (JPG/PNG)</label>
+                    <input type="file" name="image" class="form-control" accept="image/*" required>
+                </div>
+                <button type="submit" class="btn btn-primary px-5">Upload & Analyze</button>
+            </form>
+
+            {% if result %}
+                <div class="card border-primary mb-5 shadow-sm">
+                    <div class="card-header bg-primary text-white fw-bold">Analysis Results</div>
+                    <div class="card-body">
+                        <p class="card-text" style="white-space: pre-wrap;">{{ result }}</p>
+                    </div>
+                </div>
+            {% endif %}
+
+            <h5 class="fw-bold mt-4">History</h5>
+            <div class="table-responsive">
+                <table class="table table-hover mt-2">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Image</th>
+                            <th>Insight Snippet</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in history %}
+                            <tr>
+                                <td>{{ item.timestamp|date:"M d, Y H:i" }}</td>
+                                <td>
+                                    <a href="{{ item.image.url }}" target="_blank">
+                                        <img src="{{ item.image.url }}" alt="Upload" style="height: 50px; border-radius: 4px;">
+                                    </a>
+                                </td>
+                                <td class="text-truncate" style="max-width: 300px;">{{ item.analysis_result }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">No history found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

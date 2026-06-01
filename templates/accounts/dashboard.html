@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - GenAI Health{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="fw-bold">My Dashboard</h2>
+        <p class="text-secondary">Overview of your recent health activities.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Recent Chats -->
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-3">Recent AI Chats</h5>
+                {% if recent_chats %}
+                    <ul class="list-group list-group-flush">
+                        {% for chat in recent_chats %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="text-truncate" style="max-width: 150px;">{{ chat.query }}</span>
+                                <small class="text-muted">{{ chat.timestamp|date:"M d" }}</small>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted small">No recent chats.</p>
+                {% endif %}
+                <a href="{% url 'chatbot:chat' %}" class="btn btn-sm btn-outline-primary mt-3">Start New Chat</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Predictions -->
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-3">Health Predictions</h5>
+                {% if recent_predictions %}
+                    <ul class="list-group list-group-flush">
+                        {% for pred in recent_predictions %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <strong>{{ pred.predicted_disease }}</strong>
+                                    <span class="badge bg-success">{{ pred.confidence|floatformat:0 }}%</span>
+                                </div>
+                                <small class="text-muted">{{ pred.timestamp|date:"M d, Y" }}</small>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted small">No recent predictions.</p>
+                {% endif %}
+                <a href="{% url 'ml_module:checker' %}" class="btn btn-sm btn-outline-primary mt-3">Check Symptoms</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Uploads -->
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-3">Image Analysis</h5>
+                {% if recent_uploads %}
+                    <ul class="list-group list-group-flush">
+                        {% for upload in recent_uploads %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="text-truncate" style="max-width: 150px;">Analysis on {{ upload.timestamp|date:"M d" }}</span>
+                                <small class="text-muted">Analyzed</small>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted small">No recent image uploads.</p>
+                {% endif %}
+                <a href="{% url 'image_module:upload' %}" class="btn btn-sm btn-outline-primary mt-3">Upload Image</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div class="card bg-dark text-white p-5 rounded-4" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h3 class="fw-bold">AI Drug Search</h3>
+                    <p class="text-light opacity-75">Quickly find information about common medications, dosages, and side effects.</p>
+                    <a href="{% url 'drugs:search' %}" class="btn btn-primary">Search Drugs</a>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div style="font-size: 4rem;">💊</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
